@@ -59,6 +59,18 @@
   .tag.key { background: var(--accent-soft); color: var(--accent); }
   .tag.proof { background: var(--review-soft); color: var(--review); }
 
+  /* Стили для блока билетов */
+  .tickets-wrap { margin-top: 50px; border-top: 2px solid var(--ink); padding-top: 30px; margin-bottom: 40px; }
+  .tickets-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 16px; margin-top: 20px; }
+  .ticket-card { background: rgba(255, 255, 255, 0.35); border: 1px solid var(--rule); padding: 16px; border-radius: 2px; }
+  .ticket-card.missing { opacity: 0.5; border-style: dashed; background: none; }
+  .ticket-title { font-family: 'SF Mono', Consolas, monospace; font-size: 12px; font-weight: 700; color: var(--review); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px; }
+  .ticket-card.missing .ticket-title { color: var(--muted); }
+  .ticket-list { padding-left: 16px; font-size: 13.5px; color: var(--ink); }
+  .ticket-list li { margin-bottom: 6px; }
+  .ticket-list li:last-child { margin-bottom: 0; }
+  .ticket-missing-text { font-size: 13px; color: var(--muted); font-style: italic; }
+
   .reset { margin-top: 30px; font-family: 'SF Mono', Consolas, monospace; font-size: 12px; background: none; border: 1px solid var(--rule); color: var(--muted); padding: 8px 16px; border-radius: 2px; cursor: pointer; }
   .reset:hover { border-color: var(--ink); color: var(--ink); }
 
@@ -70,6 +82,7 @@
     h1 { font-size: 24px; }
     .day-title { font-size: 17px; }
     .pages { display: none; }
+    .tickets-grid { grid-template-columns: 1fr; }
   }
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
@@ -91,6 +104,12 @@
   </div>
 
   <div id="days"></div>
+
+  <div class="tickets-wrap">
+    <div class="eyebrow">Архив материалов</div>
+    <h2 style="font-size: 24px; font-weight: 700; margin-top: 4px;">Экзаменационные билеты (2025 год)</h2>
+    <div id="tickets" class="tickets-grid"></div>
+  </div>
 
   <div class="legend">
     <span><i class="swatch" style="background:var(--accent)"></i> ключевая теорема</span>
@@ -196,6 +215,38 @@ var PLAN = [
     ]},
 ];
 
+var TICKETS = [
+  { num: 1, items: ["Алгебра многочленов над полем, теорема о делении с остатком", "Уравнение центров симметрии. Приведение уравнения поверхности 2-го порядка к каноническому виду в ПДСК"] },
+  { num: 2, items: ["Самосопряженные операторы", "Квадратичные формы", "Задача на алгебру многочленов (найти все корни в поле C)"] },
+  { num: 3, items: ["Значения и корни многочлена, теорема Безу, формулы Виета, корни многочлена и степень, интерполяционная формула Лагранжа", "Унитарные/ортогональные операторы: равносильные определения", "Задача: линейные операторы. Проверить, является ли матрица диагонализируемой."] },
+  { num: 4, items: ["Кратные корни и производная. Формула Тейлора", "Ортогональные операторы", "Задача на параметр в квадратичной форме"] },
+  { num: 5, items: ["Теорема Кронекера", "Ортогонализация Грамма-Шмидта, изоморфизм евклидовых (эрмитовых) пространств", "Задача на линейные операторы: дана матрица (1, -1, 1; -1, 1, -1; a, -1, 1). При каких значениях a матрица подобна диагональной?"] },
+  { num: 6, items: ["Корни комплексных многочленов, разложение комплексных и вещественных многочленов на множители", "Корневые векторы, корневые подпространства и корневое разложение подпространства (без доказательства)", "Задача: найти канонический вид и канонический базис для ортогонального линейного оператора"] },
+  { num: 7, items: ["Фактор алгебра", "Ортогональное разложение", "Возвести матрицу 2х2 в сотую степень"] },
+  { num: 8, items: ["Основная теорема о конечных полях", "Метрика, расстояние от точки до пространства"] },
+  { num: 9, missing: true },
+  { num: 10, items: ["Поле разложения многочлена", "Приведение квадратичной формы к каноническому виду методом Лагранжа", "Задача: доказать, что оператор ортогонален, найти канонический базис"] },
+  { num: 11, items: ["Невырожденные линейные операторы", "Приведение к каноническому виду уравнения поверхности второго порядка", "НОД(x^n + 1, x^m + 1) в C"] },
+  { num: 12, items: ["Образ и ядро линейного отображения, теорема о сумме ранга и дефекта", "Теорема об определителе Грама и ее следствия, определитель матрицы оператора и объем в n-мерном пространстве"] },
+  { num: 13, missing: true },
+  { num: 14, items: ["Диагонализируемые операторы", "Сопряженные операторы (существование, единственность, связь матриц)", "Задача по алгебре многочленов"] },
+  { num: 15, items: ["Нильпотентные операторы: определения, леммы и основная теорема", "Приведение квадратичной формы к главным осям"] },
+  { num: 16, items: ["Инвариантные подпространства для линейного оператора: связь с матрицей, спектр сужения, вещественный случай", "Норма линейного оператора и сингулярные числа", "Изоморфны ли фактор-алгебры алгебры F17[x] по модулю многочленов х²-3, х²-5"] },
+  { num: 17, items: ["Теорема о подполях конечных полей", "Приведение квадратичной формы в евклидовом пространстве к главным осям"] },
+  { num: 18, items: ["Собственный вектор, собственное значение и характеристический многочлен", "Длина вектора и углы между ними, неравенство Коши-Буняковского, неравенство треугольника и параллелограмма, теорема Пифагора", "Задача: при каком параметре λ, f(x) = x⁴ - 4x + λ имеет кратные корни"] },
+  { num: 19, items: ["Комплексные числа, теорема о свойствах модуля и аргумента, возведение в степень и извлечение корня", "Приведение уравнения второго порядка к каноническому виду в подходящей декартовой системе координат (центральный случай)"] },
+  { num: 20, missing: true },
+  { num: 21, missing: true },
+  { num: 22, items: ["Алгебра линейных операторов и алгебра матриц", "Все, что было в 3.2 в методичке", "При каких n и m решетки подпространств Fp^n и Fp^m изоморфны (при m = n)"] },
+  { num: 23, items: ["Кратные корни и производная, формула Тейлора для многочлена", "Унитарные операторы: спектр и геометрическое описание, следствие для матриц", "Решить матричное уравнение в M2(C): X² = (0 -2, 2 0)"] },
+  { num: 24, items: ["Все про многочлены: от значения многочлена до формулы Лагранжа", "Самосопряженный оператор, основная теорема"] },
+  { num: 25, missing: true },
+  { num: 26, items: ["Поле разложения многочлена", "Каноническая форма поверхности второго порядка (нецентральный случай)", "Задача: собственные значения и векторы \"шахматной\" матрицы 4x4"] },
+  { num: 27, items: ["Инвариантное подпространство, спектр сужения, вещественный случай", "Приведение к каноническому виду в ОДСК", "Разложить x⁶+64 на многочлены степени ≤2 во множестве вещественных чисел"] },
+  { num: 28, items: ["Комплексные числа, свойства модуля, возведение в степень и извлечение корня", "Ортогональные операторы: спектр и геометрическое описание", "Задача на квадратичную форму"] },
+  { num: 29, items: ["Теорема о порядке, единственности и существовании конечных полей", "Сопряженность линейных отображений", "Найти матрицу R² в базисе u=(1,1), v=(2,0) и найти собственные векторы и собственные значения"] }
+];
+
 var checked = {};
 var collapsed = {};
 
@@ -256,11 +307,43 @@ function render() {
   document.getElementById('barfill').style.width = pct + '%';
 }
 
+function renderTickets() {
+  var container = document.getElementById('tickets');
+  container.innerHTML = '';
+  TICKETS.forEach(function(t) {
+    var card = document.createElement('div');
+    card.className = 'ticket-card' + (t.missing ? ' missing' : '');
+
+    var title = document.createElement('div');
+    title.className = 'ticket-title';
+    title.textContent = 'Билет ' + t.num;
+    card.appendChild(title);
+
+    if (t.missing) {
+      var missingText = document.createElement('div');
+      missingText.className = 'ticket-missing-text';
+      missingText.textContent = 'данные отсутствуют';
+      card.appendChild(missingText);
+    } else {
+      var ol = document.createElement('ol');
+      ol.className = 'ticket-list';
+      t.items.forEach(function(item) {
+        var li = document.createElement('li');
+        li.textContent = item;
+        ol.appendChild(li);
+      });
+      card.appendChild(ol);
+    }
+    container.appendChild(card);
+  });
+}
+
 document.getElementById('reset').onclick = function() {
   if (confirm('Сбросить все отметки?')) { checked = {}; render(); }
 };
 
 render();
+renderTickets();
 </script>
 </body>
 </html>
