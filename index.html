@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>План подготовки · линейная алгебра</title>
+<style>
+  :root {
+    --ink: #14110f;
+    --paper: #f6f4ee;
+    --rule: #d9d4c7;
+    --accent: #2b50c8;
+    --accent-soft: #e4e9fa;
+    --done: #1f7a4d;
+    --muted: #6f6a60;
+    --review: #b0541f;
+    --review-soft: #f6e6d9;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    color: var(--ink);
+    background: var(--paper);
+    line-height: 1.5;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 32px 20px 80px; }
+  .mono { font-family: 'SF Mono', Consolas, Menlo, monospace; }
+
+  header.head { border-bottom: 2px solid var(--ink); padding-bottom: 18px; }
+  .eyebrow { font-family: 'SF Mono', Consolas, monospace; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
+  h1 { font-size: 30px; line-height: 1.15; margin: 6px 0 4px; font-weight: 700; }
+  .sub { color: var(--muted); font-size: 15px; }
+
+  .progress-wrap { position: sticky; top: 0; background: var(--paper); padding: 14px 0 12px; z-index: 10; border-bottom: 1px solid var(--rule); margin-bottom: 22px; }
+  .progress-label { display: flex; justify-content: space-between; align-items: baseline; font-family: 'SF Mono', Consolas, monospace; font-size: 12px; margin-bottom: 7px; color: var(--muted); }
+  .progress-label b { color: var(--accent); font-size: 16px; }
+  .bar { height: 8px; background: var(--rule); overflow: hidden; }
+  .bar > span { display: block; height: 100%; width: 0; background: var(--accent); transition: width .35s cubic-bezier(.4,0,.2,1); }
+
+  .day { border-bottom: 1px solid var(--rule); padding: 22px 0; }
+  .day-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 4px; cursor: pointer; user-select: none; }
+  .daynum { font-family: 'SF Mono', Consolas, monospace; font-size: 13px; font-weight: 700; color: #fff; background: var(--ink); padding: 3px 9px; border-radius: 2px; flex-shrink: 0; }
+  .day.review .daynum { background: var(--review); }
+  .day-title { font-size: 19px; font-weight: 700; flex: 1; }
+  .pages { font-family: 'SF Mono', Consolas, monospace; font-size: 12px; color: var(--muted); }
+  .day-note { font-size: 14px; color: var(--muted); margin: 4px 0 14px; font-style: italic; }
+  .chev { font-family: 'SF Mono', Consolas, monospace; color: var(--muted); transition: transform .2s; }
+  .day.collapsed .chev { transform: rotate(-90deg); }
+  .day.collapsed .items, .day.collapsed .day-note { display: none; }
+
+  .items { list-style: none; }
+  .item { display: flex; align-items: flex-start; gap: 11px; padding: 7px 0; cursor: pointer; }
+  .box { width: 19px; height: 19px; border: 1.5px solid var(--ink); border-radius: 2px; flex-shrink: 0; margin-top: 2px; display: grid; place-items: center; transition: all .15s; background: var(--paper); }
+  .item.checked .box { background: var(--done); border-color: var(--done); }
+  .item.checked .box::after { content: '✓'; color: #fff; font-size: 13px; font-weight: bold; line-height: 1; }
+  .item-text { font-size: 15px; }
+  .item.checked .item-text { color: var(--muted); text-decoration: line-through; text-decoration-thickness: 1px; }
+  .tag { font-family: 'SF Mono', Consolas, monospace; font-size: 10px; letter-spacing: .5px; text-transform: uppercase; padding: 1px 6px; border-radius: 2px; margin-left: 8px; vertical-align: middle; white-space: nowrap; }
+  .tag.key { background: var(--accent-soft); color: var(--accent); }
+  .tag.proof { background: var(--review-soft); color: var(--review); }
+
+  .reset { margin-top: 30px; font-family: 'SF Mono', Consolas, monospace; font-size: 12px; background: none; border: 1px solid var(--rule); color: var(--muted); padding: 8px 16px; border-radius: 2px; cursor: pointer; }
+  .reset:hover { border-color: var(--ink); color: var(--ink); }
+
+  .legend { display: flex; gap: 18px; flex-wrap: wrap; font-family: 'SF Mono', Consolas, monospace; font-size: 11px; color: var(--muted); margin-top: 18px; }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .swatch { width: 11px; height: 11px; border-radius: 2px; display: inline-block; }
+
+  @media (max-width: 560px) {
+    h1 { font-size: 24px; }
+    .day-title { font-size: 17px; }
+    .pages { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="head">
+    <div class="eyebrow">Чуркин · линейная алгебра · 2 семестр</div>
+    <h1>План подготовки за 9 дней</h1>
+    <div class="sub">Отмечай пункты по ходу. Прогресс держится, пока открыта вкладка.</div>
+  </header>
+
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span>Прогресс</span>
+      <span><b id="done">0</b> / <span id="total">0</span> · <span id="pct">0</span>%</span>
+    </div>
+    <div class="bar"><span id="barfill"></span></div>
+  </div>
+
+  <div id="days"></div>
+
+  <div class="legend">
+    <span><i class="swatch" style="background:var(--accent)"></i> ключевая теорема</span>
+    <span><i class="swatch" style="background:var(--review)"></i> знать доказательство</span>
+    <span><i class="swatch" style="background:var(--ink)"></i> день изучения</span>
+  </div>
+
+  <button class="reset" id="reset">↺ Сбросить отметки</button>
+</div>
+
+<script>
+var PLAN = [
+  { day: 1, kind: 'study', title: 'Многочлены · часть 1', pages: 'с. 3–14',
+    note: 'Много техники — деление и разложение прорешай руками.',
+    items: [
+      ['Алгебра многочленов: K[x], таблица умножения eᵢeⱼ = eᵢ₊ⱼ', null],
+      ['Лемма о степени, целостность K[x], обратимые элементы', 'proof'],
+      ['Деление с остатком (существование + единственность)', 'key'],
+      ['Теорема Безу; число корней ≤ степени', 'key'],
+      ['Формулы Виета, интерполяция Лагранжа', null],
+      ['Производная, кратные корни, формула Тейлора', null],
+      ['Комплексные корни, теорема Даламбера-Гаусса', 'key'],
+    ]},
+  { day: 2, kind: 'study', title: 'Многочлены · часть 2', pages: 'с. 15–24',
+    note: 'Абстрактнее — упор на понимание конструкций, не вычисления.',
+    items: [
+      ['Z и K[x]: НОД, алгоритм Евклида, неприводимость', null],
+      ['Фактор-алгебры K[x]/(p(x)); когда это поле', 'key'],
+      ['Разобрать пример Z₂[x]/(x²+x+1) до конца', null],
+      ['Теорема Кронекера о существовании корня', 'proof'],
+      ['Поле разложения многочлена', null],
+      ['Основная теорема о конечных полях (порядок pⁿ)', 'key'],
+      ['Подполя конечных полей (Fₚᵏ ⊆ Fₚⁿ ⇔ k | n)', null],
+    ]},
+  { day: 3, kind: 'study', title: 'Линейные отображения · часть 1', pages: 'с. 25–36',
+    note: 'Ядро курса. Формулу замены матрицы выучи назубок.',
+    items: [
+      ['Определения, теорема о свободе, матрица отображения', null],
+      ['Координаты образа вектора: y = Ax', null],
+      ['Замена базиса: Aₑ′ = C⁻¹AₑC', 'key'],
+      ['Алгебра операторов L(V) ≅ Mₙ(K)', null],
+      ['Образ и ядро; формула rk A + df A = dim V', 'proof'],
+      ['Невырожденные операторы: 8 эквивалентных условий', 'key'],
+    ]},
+  { day: 4, kind: 'study', title: 'Линейные отображения · часть 2', pages: 'с. 37–52',
+    note: 'ЖНФ технически тяжёлая — прорешай пример с N (с. 51).',
+    items: [
+      ['Собственные значения, характеристический многочлен', 'key'],
+      ['Диагонализируемость (3 эквивалентных условия)', 'proof'],
+      ['Инвариантные подпространства, приводимость', null],
+      ['Нильпотентные операторы, ниль-таблицы и ниль-базис', 'key'],
+      ['Формула sₕ = rₕ₋₁ − 2rₕ + rₕ₊₁', null],
+      ['Жорданова нормальная форма матрицы', 'key'],
+    ]},
+  { day: 5, kind: 'review', title: 'Повторение блоков 1–2', pages: 'без нового',
+    note: 'Восстанавливай доказательства по памяти, прорешай примеры заново.',
+    items: [
+      ['Перечитать конспект по многочленам', null],
+      ['Восстановить: Безу, Даламбер-Гаусс, теорема Кронекера', 'proof'],
+      ['Восстановить: rk + df = dim V', 'proof'],
+      ['Восстановить по памяти 8 условий невырожденности', 'proof'],
+      ['Прорешать 2–3 примера без подглядывания', null],
+    ]},
+  { day: 6, kind: 'study', title: 'Евклидовы / эрмитовы пространства · ч.1', pages: 'с. 53–69',
+    note: 'Самый объёмный блок — держи темп.',
+    items: [
+      ['Скалярное произведение, длина, угол', null],
+      ['Неравенство Коши-Буняковского, треугольника', 'proof'],
+      ['Ортогонализация Грама-Шмидта', 'key'],
+      ['Ортогональные дополнения, разложение V = U ⊕ U⊥', 'key'],
+      ['Метрика, расстояние до подпространства', null],
+      ['Матрица Грама и n-мерный объём', null],
+      ['Сопряжённое отображение, лемма Рисса', 'proof'],
+    ]},
+  { day: 7, kind: 'study', title: 'Евклидовы / эрмитовы пространства · ч.2', pages: 'с. 70–84',
+    note: 'Вершина курса. Самый насыщенный день.',
+    items: [
+      ['Самосопряжённые операторы (теорема-определение)', 'key'],
+      ['Основная теорема: Sp ⊂ ℝ, ОНБ из собств. векторов', 'proof'],
+      ['Ортогональные и унитарные операторы (3 теоремы)', 'key'],
+      ['Сингулярные числа σⱼ = √λⱼ', 'key'],
+      ['Сингулярное и полярное разложения матриц', null],
+      ['Норма отображения = макс. сингулярное число', null],
+    ]},
+  { day: 8, kind: 'study', title: 'Квадратичные формы + повтор блока 3', pages: 'с. 85–98',
+    note: 'Утром — формы, вечером — повтор самого тяжёлого из блока 3.',
+    items: [
+      ['Формы и матрицы, поляризация', null],
+      ['Канонизация по Лагранжу', 'key'],
+      ['Приведение к главным осям', null],
+      ['Закон инерции, тип и сигнатура формы', 'proof'],
+      ['Критерий Сильвестра, теорема Якоби', 'key'],
+      ['Поверхности 2-го порядка (центр./нецентр. тип)', null],
+      ['Вечер: повтор самосопряжённых/ортогональных операторов', null],
+    ]},
+  { day: 9, kind: 'review', title: 'Итоговое повторение + буфер', pages: 'без нового',
+    note: 'Не учи новое. Пройди по оглавлению, закрой пробелы, отдохни.',
+    items: [
+      ['По каждому пункту оглавления: главная теорема + идея', 'proof'],
+      ['Закрыть оставшиеся пробелы', null],
+      ['Лёгкий прогон формул на отдельном листе', null],
+      ['Отдых перед экзаменом', null],
+    ]},
+];
+
+var checked = {};
+var collapsed = {};
+
+function tagHtml(tag) {
+  if (tag === 'key') return '<span class="tag key">ключ. теорема</span>';
+  if (tag === 'proof') return '<span class="tag proof">знать доказ-во</span>';
+  return '';
+}
+
+function render() {
+  var container = document.getElementById('days');
+  container.innerHTML = '';
+  var total = 0, done = 0;
+
+  PLAN.forEach(function(d) {
+    var dayDone = 0;
+    d.items.forEach(function(_, i) {
+      total++;
+      if (checked[d.day + '-' + i]) { done++; dayDone++; }
+    });
+
+    var sec = document.createElement('section');
+    sec.className = 'day ' + d.kind + (collapsed[d.day] ? ' collapsed' : '');
+
+    var head = document.createElement('div');
+    head.className = 'day-head';
+    head.innerHTML =
+      '<span class="daynum mono">DAY ' + d.day + '</span>' +
+      '<span class="day-title">' + d.title + '</span>' +
+      '<span class="pages">' + d.pages + ' · ' + dayDone + '/' + d.items.length + '</span>' +
+      '<span class="chev mono">▾</span>';
+    head.onclick = function() { collapsed[d.day] = !collapsed[d.day]; render(); };
+    sec.appendChild(head);
+
+    var note = document.createElement('div');
+    note.className = 'day-note';
+    note.textContent = d.note;
+    sec.appendChild(note);
+
+    var ul = document.createElement('ul');
+    ul.className = 'items';
+    d.items.forEach(function(it, i) {
+      var key = d.day + '-' + i;
+      var li = document.createElement('li');
+      li.className = 'item' + (checked[key] ? ' checked' : '');
+      li.innerHTML = '<span class="box"></span><span class="item-text">' + it[0] + tagHtml(it[1]) + '</span>';
+      li.onclick = function() { checked[key] = !checked[key]; render(); };
+      ul.appendChild(li);
+    });
+    sec.appendChild(ul);
+    container.appendChild(sec);
+  });
+
+  var pct = total ? Math.round(done / total * 100) : 0;
+  document.getElementById('done').textContent = done;
+  document.getElementById('total').textContent = total;
+  document.getElementById('pct').textContent = pct;
+  document.getElementById('barfill').style.width = pct + '%';
+}
+
+document.getElementById('reset').onclick = function() {
+  if (confirm('Сбросить все отметки?')) { checked = {}; render(); }
+};
+
+render();
+</script>
+</body>
+</html>
