@@ -23,6 +23,48 @@
     background: var(--paper);
     line-height: 1.5;
   }
+  
+  /* Стили для фиксированной шапки */
+  .top-bar {
+    position: sticky;
+    top: 0;
+    background: var(--paper);
+    border-bottom: 2px solid var(--ink);
+    z-index: 100;
+    padding: 10px 0;
+  }
+  .top-bar-inner {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .top-bar-title {
+    font-family: 'SF Mono', Consolas, Menlo, monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--ink);
+    font-weight: 700;
+  }
+  .btn-tickets {
+    display: inline-block;
+    font-family: 'SF Mono', Consolas, Menlo, monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: #fff;
+    background: var(--accent);
+    padding: 6px 14px;
+    border-radius: 2px;
+    text-decoration: none;
+    transition: background .15s;
+  }
+  .btn-tickets:hover {
+    background: #1d3fa3;
+  }
+
   .wrap { max-width: 860px; margin: 0 auto; padding: 32px 20px 80px; }
   .mono { font-family: 'SF Mono', Consolas, Menlo, monospace; }
 
@@ -31,7 +73,8 @@
   h1 { font-size: 30px; line-height: 1.15; margin: 6px 0 4px; font-weight: 700; }
   .sub { color: var(--muted); font-size: 15px; }
 
-  .progress-wrap { position: sticky; top: 0; background: var(--paper); padding: 14px 0 12px; z-index: 10; border-bottom: 1px solid var(--rule); margin-bottom: 22px; }
+  /* Корректировка top, чтобы прогресс-бар лип сразу под новой шапкой */
+  .progress-wrap { position: sticky; top: 52px; background: var(--paper); padding: 14px 0 12px; z-index: 10; border-bottom: 1px solid var(--rule); margin-bottom: 22px; }
   .progress-label { display: flex; justify-content: space-between; align-items: baseline; font-family: 'SF Mono', Consolas, monospace; font-size: 12px; margin-bottom: 7px; color: var(--muted); }
   .progress-label b { color: var(--accent); font-size: 16px; }
   .bar { height: 8px; background: var(--rule); overflow: hidden; }
@@ -55,7 +98,7 @@
   .item.checked .box::after { content: '✓'; color: #fff; font-size: 13px; font-weight: bold; line-height: 1; }
   .item-text { font-size: 15px; }
   .item.checked .item-text { color: var(--muted); text-decoration: line-through; text-decoration-thickness: 1px; }
-  
+   
   .tag { font-family: 'SF Mono', Consolas, monospace; font-size: 10px; letter-spacing: .5px; text-transform: uppercase; padding: 1px 6px; border-radius: 2px; margin-left: 8px; vertical-align: middle; white-space: nowrap; }
   .tag.key { background: var(--accent-soft); color: var(--accent); }
   .tag.proof { background: var(--review-soft); color: var(--review); }
@@ -70,7 +113,7 @@
   .ticket-list { padding-left: 16px; font-size: 13.5px; color: var(--ink); }
   .ticket-list li { margin-bottom: 6px; }
   .ticket-list li:last-child { margin-bottom: 0; }
-  .ticket-missing-text { font-size: 13px; color: var(--muted); font-style: italic; }
+  .ticket-summary-text { font-size: 13px; color: var(--muted); font-style: italic; }
 
   .reset { margin-top: 30px; font-family: 'SF Mono', Consolas, monospace; font-size: 12px; background: none; border: 1px solid var(--rule); color: var(--muted); padding: 8px 16px; border-radius: 2px; cursor: pointer; }
   .reset:hover { border-color: var(--ink); color: var(--ink); }
@@ -84,11 +127,21 @@
     .day-title { font-size: 17px; }
     .pages { display: none; }
     .tickets-grid { grid-template-columns: 1fr; }
+    .top-bar-title { display: none; } /* Скрываем текст в шапке на мобильных, оставляя только кнопку по центру */
+    .top-bar-inner { justify-content: center; }
   }
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
 </head>
 <body>
+
+<div class="top-bar">
+  <div class="top-bar-inner">
+    <div class="top-bar-title">Линейная алгебра · Материалы</div>
+    <a href="https://drive.google.com/file/d/178h0-dhMwn9LMJOt0FOCU-FJxxCJcT-7/view?usp=sharing" target="_blank" class="btn-tickets">Расписанные билеты</a>
+  </div>
+</div>
+
 <div class="wrap">
   <header class="head">
     <div class="eyebrow">Чуркин · линейная алгебра · 2 семестр</div>
@@ -296,9 +349,9 @@ function render() {
       var key = d.day + '-' + i;
       var li = document.createElement('li');
       li.className = 'item' + (checked[key] ? ' checked' : '');
-      
+       
       var ticketTag = (it[2] && it[2] !== '') ? '<span class="t-ref">' + it[2] + '</span>' : '';
-      
+       
       li.innerHTML = '<span class="box"></span><span class="item-text">' + it[0] + ticketTag + tagHtml(it[1]) + '</span>';
       li.onclick = function() { checked[key] = !checked[key]; render(); };
       ul.appendChild(li);
@@ -328,7 +381,7 @@ function renderTickets() {
 
     if (t.missing) {
       var missingText = document.createElement('div');
-      missingText.className = 'ticket-missing-text';
+      missingText.className = 'ticket-summary-text';
       missingText.textContent = 'данные отсутствуют';
       card.appendChild(missingText);
     } else {
