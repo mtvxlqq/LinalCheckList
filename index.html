@@ -17,6 +17,12 @@
     --review-soft: #f6e6d9;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  /* Плавный скролл при клике на якорь */
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     font-family: Georgia, 'Times New Roman', serif;
     color: var(--ink);
@@ -49,20 +55,34 @@
     color: var(--ink);
     font-weight: 700;
   }
-  .btn-tickets {
+  .top-bar-actions {
+    display: flex;
+    gap: 8px;
+  }
+  .btn-tickets, .btn-scroll {
     display: inline-block;
     font-family: 'SF Mono', Consolas, Menlo, monospace;
     font-size: 12px;
     font-weight: 700;
-    color: #fff;
-    background: var(--accent);
     padding: 6px 14px;
     border-radius: 2px;
     text-decoration: none;
-    transition: background .15s;
+    transition: all .15s;
+  }
+  .btn-tickets {
+    color: #fff;
+    background: var(--accent);
   }
   .btn-tickets:hover {
     background: #1d3fa3;
+  }
+  .btn-scroll {
+    color: var(--ink);
+    background: transparent;
+    border: 1px solid var(--ink);
+  }
+  .btn-scroll:hover {
+    background: rgba(20, 17, 15, 0.08);
   }
 
   .wrap { max-width: 860px; margin: 0 auto; padding: 32px 20px 80px; }
@@ -104,7 +124,8 @@
   .tag.proof { background: var(--review-soft); color: var(--review); }
   .t-ref { font-family: 'SF Mono', Consolas, monospace; font-size: 11px; color: var(--ink); background: #e3e1d9; padding: 1px 5px; border-radius: 2px; margin-left: 6px; vertical-align: middle; white-space: nowrap; }
 
-  .tickets-wrap { margin-top: 50px; border-top: 2px solid var(--ink); padding-top: 30px; margin-bottom: 40px; }
+  /* Отступ сверху (scroll-margin-top) нужен, чтобы при переходе к билетам заголовок архива не прятался под фиксированную шапку */
+  .tickets-wrap { margin-top: 50px; border-top: 2px solid var(--ink); padding-top: 30px; margin-bottom: 40px; scroll-margin-top: 60px; }
   .tickets-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 16px; margin-top: 20px; }
   .ticket-card { background: rgba(255, 255, 255, 0.35); border: 1px solid var(--rule); padding: 16px; border-radius: 2px; }
   .ticket-card.missing { opacity: 0.5; border-style: dashed; background: none; }
@@ -127,7 +148,7 @@
     .day-title { font-size: 17px; }
     .pages { display: none; }
     .tickets-grid { grid-template-columns: 1fr; }
-    .top-bar-title { display: none; } /* Скрываем текст в шапке на мобильных, оставляя только кнопку по центру */
+    .top-bar-title { display: none; } /* Скрываем текст в шапке на мобильных */
     .top-bar-inner { justify-content: center; }
   }
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
@@ -138,7 +159,10 @@
 <div class="top-bar">
   <div class="top-bar-inner">
     <div class="top-bar-title">Линейная алгебра · Материалы</div>
-    <a href="https://drive.google.com/file/d/178h0-dhMwn9LMJOt0FOCU-FJxxCJcT-7/view?usp=sharing" target="_blank" class="btn-tickets">Расписанные билеты</a>
+    <div class="top-bar-actions">
+      <a href="#archive" class="btn-scroll">Билеты</a>
+      <a href="https://drive.google.com/file/d/178h0-dhMwn9LMJOt0FOCU-FJxxCJcT-7/view?usp=sharing" target="_blank" class="btn-tickets">Расписанные билеты</a>
+    </div>
   </div>
 </div>
 
@@ -159,7 +183,7 @@
 
   <div id="days"></div>
 
-  <div class="tickets-wrap">
+  <div class="tickets-wrap" id="archive">
     <div class="eyebrow">Архив материалов</div>
     <h2 style="font-size: 24px; font-weight: 700; margin-top: 4px;">Экзаменационные билеты (2025 год)</h2>
     <div id="tickets" class="tickets-grid"></div>
@@ -213,7 +237,7 @@ var PLAN = [
   { day: 4, kind: 'study', title: 'Линейные отображения · часть 2', pages: 'с. 37–52',
     note: 'ЖНФ технически тяжёлая — прорешай пример с N (с. 51).',
     items: [
-      ['Собственные значения, характеристический многочлен', 'key', 'Б18.1, Б26.3, Б29.3'],
+      ['Собственные значения, characteristic-characteristic многочлен', 'key', 'Б18.1, Б26.3, Б29.3'],
       ['Диагонализируемость (3 эквивалентных условия)', 'proof', 'Б3.3, Б5.3, Б14.1'],
       ['Инвариантные подпространства, приводимость, спектр сужения', null, 'Б16.1, Б27.1'],
       ['Корневые векторы, подпространства и корневое разложение', null, 'Б6.2'],
